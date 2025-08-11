@@ -1,109 +1,251 @@
 import 'package:flutter/material.dart';
-import 'package:najran/widgets/menu_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:najran/screens/news/cubit/news_cubit.dart';
+import 'package:najran/widgets/cards/home_news_card.dart';
+import 'package:najran/widgets/cards/home_service_card.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
-import 'package:najran/services/auth_service.dart';
 import 'package:najran/models/current_user_holder.dart';
+import 'package:najran/widgets/carousels/news_carousel.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    context.read<NewsCubit>().fetchNews();
+
     return NajranScaffold(
+      appBar: false,
       currentIndex: 0,
       onTabSelected: (index) {
         print('Naviguer vers index $index');
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+
+      child: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Color(0xFF1B8354),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              Stack(
+                children: [
+                  Container(
+                    height: screenHeight * 0.24,
+                    width: double.infinity,
+                    child: Image.asset(
+                      'assets/images/saudia_flag.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Container(
+                    height: screenHeight * 0.24,
+                    width: double.infinity,
+                    color: Color(0xFF1b8153).withOpacity(0.9),
+                  ),
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 5),
+                            Image.asset(
+                              'assets/images/white_logo.png',
+                              width: 70,
+                              height: 70,
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              "مرحباً بك",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              CurrentUserHolder.instance.user?.name ??
+                                  "اسم المستخدم",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "مرحباً بك",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          CurrentUserHolder.instance.user?.name ??
-                              "اسم المستخدم",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
+                    Text(
+                      "أخبار الإمارة",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.grey[800],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(2), // épaisseur de la bordure
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: CircleAvatar(
-                            backgroundImage:
-                                CurrentUserHolder
-                                    .instance
-                                    .user
-                                    ?.imageProvider ??
-                                AssetImage('assets/images/user.png'),
-                            radius: 30,
-                          ),
+                    OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey.shade400),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
                         ),
-                        SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(Icons.logout, color: Colors.white),
-                          tooltip: 'تسجيل الخروج',
-                          onPressed: () async {
-                            await OdooApiService().logout();
-                            Navigator.pushReplacementNamed(context, '/login');
-                          },
+                      ),
+                      child: Text(
+                        ' عرض الكل',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.2,
-                children: [
-                  MenuCard(
-                    Path: 'assets/icons/laptop.svg',
-                    title: "الخدمات الإلكترونية",
-                  ),
-                  MenuCard(
-                    Path: 'assets/icons/book.svg',
-                    title: "المركز الإعلامي",
-                  ),
-                  MenuCard(Path: 'assets/icons/map.svg', title: "منطقة نجران"),
-                  MenuCard(
-                    Path: 'assets/icons/localisation.svg',
-                    title: "الإمارة",
-                  ),
-                  MenuCard(
-                    Path: 'assets/icons/person.svg',
-                    title: "صوت المستفيد",
-                  ),
-                  MenuCard(Path: 'assets/icons/chat.svg', title: "تواصل معنا"),
-                ],
+              const SizedBox(height: 5),
+              SizedBox(
+                height: 250,
+                child: BlocBuilder<NewsCubit, NewsState>(
+                  builder: (context, state) {
+                    if (state is NewsLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is NewsError) {
+                      return Center(child: Text("Erreur: ${state.message}"));
+                    }
+                    if (state is NewsLoaded) {
+                      final newsList = state.news;
+
+                      return CustomCarousel(
+                        items: newsList.map((news) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0,
+                            ),
+                            child: HomeNewsCard(
+                              news: news,
+                              onTap: () {
+                                // Action au clic
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }
+                    return SizedBox(height: 300);
+                  },
+                ),
+              ),
+
+              SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      " الخدمات الإلكترونية ",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey.shade400),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        ' عرض الكل',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                height: 200,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: const [
+                    SizedBox(width: 10),
+
+                    HomeServiceCard(
+                      title: 'خدمات الوفيات',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/folder.svg',
+                    ),
+                    SizedBox(width: 10),
+                    HomeServiceCard(
+                      title: 'خدمات الزواج',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/persons.svg',
+                    ),
+                    SizedBox(width: 10),
+                    HomeServiceCard(
+                      title: 'خدمة الإستعلام عن معاملة',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/check.svg',
+                    ),
+                    SizedBox(width: 10),
+                    HomeServiceCard(
+                      title: 'خدمة طلب موعد',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/calendar.svg',
+                    ),
+                    SizedBox(width: 10),
+                    HomeServiceCard(
+                      title: 'خدمة طلب تعويض الأضرار',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/user.svg',
+                    ),
+                    SizedBox(width: 10),
+                    HomeServiceCard(
+                      title: 'خدمة السجناء',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/prison.svg',
+                    ),
+                    SizedBox(width: 10),
+                    HomeServiceCard(
+                      title: 'خدمة الاستدعاء',
+                      description: 'نص إضافي لمحتوى الخدمة',
+                      rating: 3.5,
+                      reviews: 12,
+                      iconPath: 'assets/icons/mail.svg',
+                    ),
+                    SizedBox(width: 10),
+                  ],
+                ),
               ),
             ],
           ),

@@ -7,6 +7,7 @@ class NajranScaffold extends StatelessWidget {
   final int currentIndex;
   final Function(int)? onTabSelected;
   final String? title;
+  final bool appBar;
 
   const NajranScaffold({
     required this.child,
@@ -14,6 +15,7 @@ class NajranScaffold extends StatelessWidget {
     this.onTabSelected,
     this.title,
     Key? key,
+    this.appBar = true,
   }) : super(key: key);
 
   @override
@@ -21,52 +23,50 @@ class NajranScaffold extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          titleSpacing: 0,
-          automaticallyImplyLeading: false,
-          title: title != null
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _IconButton(
-                      icon: Icons.arrow_back,
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    Text(
-                      title!,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+        appBar: appBar
+            ? AppBar(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                titleSpacing: 10,
+                automaticallyImplyLeading: false,
+                title: title != null
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            title!,
+                            style: TextStyle(
+                              fontSize: 22,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          _IconButton(
+                            icon: Icons.close,
+                            onPressed: () => Navigator.of(context).maybePop(),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 12.0),
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                              width: 40,
+                              height: 40,
+                            ),
+                          ),
+                          Spacer(),
+                          _AppBarIcon(assetPath: 'assets/icons/search.svg'),
+                          SizedBox(width: 8),
+                          _AppBarIcon(assetPath: 'assets/icons/language.svg'),
+                          SizedBox(width: 8),
+                          _AppBarIcon(assetPath: 'assets/icons/person.svg'),
+                        ],
                       ),
-                    ),
-                    _IconButton(
-                      icon: Icons.close,
-                      onPressed: () => Navigator.of(context).maybePop(),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                    Spacer(),
-                    _AppBarIcon(assetPath: 'assets/icons/search.svg'),
-                    SizedBox(width: 8),
-                    _AppBarIcon(assetPath: 'assets/icons/language.svg'),
-                    SizedBox(width: 8),
-                    _AppBarIcon(assetPath: 'assets/icons/person.svg'),
-                  ],
-                ),
-        ),
+              )
+            : null,
         body: child,
         bottomNavigationBar: NajranBottomNavBar(currentIndex: currentIndex),
       ),

@@ -13,7 +13,7 @@ class InactivityWatcher extends StatefulWidget {
 
 class _InactivityWatcherState extends State<InactivityWatcher> {
   Timer? _inactivityTimer;
-  final Duration _inactivityDuration = Duration(minutes: 2);
+  final Duration _inactivityDuration = Duration(minutes: 5);
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();

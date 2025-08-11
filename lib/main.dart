@@ -38,7 +38,12 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
       routes: {
         '/login': (_) => const NajranLoginPage(),
-        '/home': (_) => HomePage(),
+        '/home': (_) => BlocProvider(
+          create: (_) =>
+              NewsCubit(odooApiService: context.read<OdooApiService>())
+                ..fetchNews(),
+          child: HomePage(),
+        ),
         '/news': (context) => BlocProvider(
           create: (_) =>
               NewsCubit(odooApiService: context.read<OdooApiService>())

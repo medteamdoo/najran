@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:najran/screens/electronic_services.dart';
 import 'package:najran/screens/home_page.dart';
-import 'package:najran/screens/imara_screen.dart';
+import 'package:najran/screens/list_screen.dart';
 import 'package:najran/screens/news/cubit/news_cubit.dart';
 import 'package:najran/screens/news/news_screen.dart';
 import 'package:najran/services/auth_service.dart';
@@ -20,7 +20,12 @@ class NajranBottomNavBar extends StatelessWidget {
     Widget page;
     switch (index) {
       case 0:
-        page = HomePage();
+        page = BlocProvider(
+          create: (_) =>
+              NewsCubit(odooApiService: context.read<OdooApiService>())
+                ..fetchNews(),
+          child: HomePage(),
+        );
         break;
       case 1:
         // Fournir le NewsCubit avec OdooApiService
@@ -35,10 +40,7 @@ class NajranBottomNavBar extends StatelessWidget {
         page = ElectronicServices();
         break;
       case 3:
-        page = RegionInfoScreen();
-        break;
-      case 4:
-        page = HomePage();
+        page = ListScreen();
         break;
       default:
         return;
@@ -69,11 +71,7 @@ class NajranBottomNavBar extends StatelessWidget {
           icon: Icon(Icons.web),
           label: "الخدمات الإلكترونية",
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.location_city),
-          label: "الإمارة",
-        ),
-        BottomNavigationBarItem(icon: Icon(Icons.apps), label: "الخدمات"),
+        BottomNavigationBarItem(icon: Icon(Icons.apps), label: "القائمة"),
       ],
     );
   }

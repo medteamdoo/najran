@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:najran/widgets/carousels/carousel.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 
-class RegionInfoScreen extends StatelessWidget {
+class PrinceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return NajranScaffold(
-      title: 'منطقة نجران',
+      title: 'أمير منطقة نجران',
       currentIndex: 3,
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Partie haute avec image de fond et texte (25% de l'écran)
             Stack(
               children: [
                 Container(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:najran/screens/news/cubit/news_cubit.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
-import 'package:najran/widgets/news_card.dart';
+import 'package:najran/widgets/cards/news_card.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
