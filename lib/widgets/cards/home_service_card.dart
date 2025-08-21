@@ -22,8 +22,8 @@ class HomeServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 240, // ⬅ largeur réduite
-      height: 190, // ⬅ hauteur réduite
+      width: 200, // ⬅ largeur réduite
+      height: 230, // ⬅ hauteur réduite
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: Card(
@@ -44,11 +44,11 @@ class HomeServiceCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     CircleAvatar(
-                      radius: 14, // ⬅ plus petit
+                      radius: 16, // ⬅ plus petit
                       backgroundColor: const Color(0xFFf3fcf6),
                       child: SvgPicture.asset(
-                        width: 12,
-                        height: 12,
+                        width: 15,
+                        height: 15,
                         iconPath,
                         color: const Color(0xFF1B8354),
                       ),
@@ -62,7 +62,7 @@ class HomeServiceCard extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
-                    fontSize: 14, // ⬅ réduit
+                    fontSize: 16, // ⬅ réduit
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -70,29 +70,24 @@ class HomeServiceCard extends StatelessWidget {
                 // Description
                 Text(
                   description,
-                  style: const TextStyle(fontSize: 12), // ⬅ réduit
+                  style: const TextStyle(fontSize: 14), // ⬅ réduit
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 6),
-
-                // Rating + nombre d'avis
-                Row(
-                  children: [
-                    RatingBarIndicator(
-                      rating: rating,
-                      itemBuilder: (context, index) =>
-                          const Icon(Icons.star, color: Colors.amber),
-                      itemCount: 5,
-                      itemSize: 14.0, // ⬅ réduit
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '$reviews تقييم',
-                      style: const TextStyle(fontSize: 10), // ⬅ réduit
-                    ),
-                  ],
+                const SizedBox(height: 5),
+                RatingBarIndicator(
+                  rating: rating,
+                  itemBuilder: (context, index) =>
+                      const Icon(Icons.star, color: Colors.amber),
+                  itemCount: 5,
+                  itemSize: 14.0, // ⬅ réduit
                 ),
+                const SizedBox(height: 5),
+                Text(
+                  '$reviews تقييم',
+                  style: const TextStyle(fontSize: 10), // ⬅ réduit
+                ),
+
                 const Spacer(),
 
                 // Boutons
@@ -101,7 +96,7 @@ class HomeServiceCard extends StatelessWidget {
                     OutlinedButton(
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
-                        minimumSize: const Size(60, 30), // ⬅ plus petit
+                        minimumSize: const Size(80, 30), // ⬅ plus petit
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 4,
@@ -133,7 +128,7 @@ class HomeServiceCard extends StatelessWidget {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(60, 30), // ⬅ plus petit
+                        minimumSize: const Size(80, 30), // ⬅ plus petit
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 4,

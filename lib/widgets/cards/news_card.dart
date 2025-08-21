@@ -12,15 +12,16 @@ class NewsCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
+        color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
+          side: const BorderSide(color: Color(0xFFD2D6DB), width: 1),
         ),
         elevation: 4,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildImageOrVideoThumbnail(),
-            // Contenu texte
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(

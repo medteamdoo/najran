@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:najran/config/config.dart';
 import 'package:najran/services/auth_service.dart';
 import 'package:najran/models/current_user_holder.dart';
 
@@ -17,7 +16,6 @@ class _NajranLoginPageState extends State<NajranLoginPage> {
 
   void _handleLogin() async {
     String? errorMessage = await _apiService.login(
-      AppConfig.dbName,
       _usernameController.text,
       _passwordController.text,
     );

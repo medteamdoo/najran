@@ -56,7 +56,7 @@ class News {
   }
 
   bool get isYoutubeVideo {
-    return videoUrl != null && videoUrl!.contains('youtube.com');
+    return videoUrl != null;
   }
 
   String? get youtubeThumbnail {
@@ -64,7 +64,26 @@ class News {
 
     try {
       final uri = Uri.tryParse(videoUrl!);
-      final videoId = uri?.queryParameters['v'] ?? videoUrl!.split('/').last;
+      if (uri == null) return null;
+
+      String videoId;
+
+      // Pour les URLs de type: https://www.youtube.com/watch?v=j02lAZqrics
+      if (uri.host.contains('youtube.com')) {
+        videoId = uri.queryParameters['v'] ?? '';
+      }
+      // Pour les URLs de type: https://youtu.be/j02lAZqrics
+      else if (uri.host.contains('youtu.be')) {
+        videoId = uri.pathSegments.first;
+      }
+      // Autres formats non supportés
+      else {
+        return null;
+      }
+
+      // Vérifier que l'ID est valide
+      if (videoId.isEmpty) return null;
+
       return 'https://img.youtube.com/vi/$videoId/0.jpg';
     } catch (e) {
       return null;

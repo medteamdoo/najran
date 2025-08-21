@@ -44,7 +44,7 @@ class _CustomCarouselState extends State<CustomCarousel> {
         }
         _pageController.animateToPage(
           nextPage,
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(milliseconds: 400),
           curve: Curves.easeInOut,
         );
       }

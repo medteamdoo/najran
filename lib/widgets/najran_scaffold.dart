@@ -23,6 +23,7 @@ class NajranScaffold extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: appBar
             ? AppBar(
                 backgroundColor: Colors.white,
@@ -30,21 +31,28 @@ class NajranScaffold extends StatelessWidget {
                 titleSpacing: 10,
                 automaticallyImplyLeading: false,
                 title: title != null
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ? Column(
                         children: [
-                          Text(
-                            title!,
-                            style: TextStyle(
-                              fontSize: 22,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                title!,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              _IconButton(
+                                icon: Icons.arrow_forward,
+                                onPressed: () =>
+                                    Navigator.of(context).maybePop(),
+                              ),
+                            ],
                           ),
-                          _IconButton(
-                            icon: Icons.close,
-                            onPressed: () => Navigator.of(context).maybePop(),
-                          ),
+                          SizedBox(height: 6),
+                          const Divider(height: 1),
                         ],
                       )
                     : Row(

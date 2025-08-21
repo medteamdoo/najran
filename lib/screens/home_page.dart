@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:najran/screens/electronic_services.dart';
 import 'package:najran/screens/news/cubit/news_cubit.dart';
+import 'package:najran/screens/news/news_details_screen.dart';
+import 'package:najran/screens/news/news_screen.dart';
+import 'package:najran/services/auth_service.dart';
 import 'package:najran/widgets/cards/home_news_card.dart';
 import 'package:najran/widgets/cards/home_service_card.dart';
+import 'package:najran/widgets/circle_svg_icon.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 import 'package:najran/models/current_user_holder.dart';
 import 'package:najran/widgets/carousels/news_carousel.dart';
@@ -49,10 +54,31 @@ class HomePage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(height: 5),
-                            Image.asset(
-                              'assets/images/white_logo.png',
-                              width: 70,
-                              height: 70,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.asset(
+                                  'assets/images/white_logo.png',
+                                  width: 70,
+                                  height: 70,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircleSvgIcon(
+                                      assetPath: 'assets/icons/language.svg',
+                                    ),
+                                    SizedBox(width: 12),
+                                    CircleSvgIcon(
+                                      assetPath: 'assets/icons/notif.svg',
+                                    ),
+                                    SizedBox(width: 12),
+                                    CircleSvgIcon(
+                                      assetPath: 'assets/icons/search.svg',
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                             SizedBox(height: 5),
                             Text(
@@ -94,7 +120,19 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                              create: (_) => NewsCubit(
+                                odooApiService: context.read<OdooApiService>(),
+                              )..fetchNews(),
+                              child: NewsScreen(),
+                            ),
+                          ),
+                        );
+                      },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Colors.grey.shade400),
                         shape: RoundedRectangleBorder(
@@ -135,7 +173,18 @@ class HomePage extends StatelessWidget {
                             child: HomeNewsCard(
                               news: news,
                               onTap: () {
-                                // Action au clic
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BlocProvider(
+                                      create: (_) => NewsCubit(
+                                        odooApiService: context
+                                            .read<OdooApiService>(),
+                                      )..fetchNews(),
+                                      child: NewsDetailScreen(news: news),
+                                    ),
+                                  ),
+                                );
                               },
                             ),
                           );
@@ -162,7 +211,14 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ElectronicServices(),
+                          ),
+                        );
+                      },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Colors.grey.shade400),
                         shape: RoundedRectangleBorder(
@@ -182,12 +238,11 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200,
+                height: 220,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: const [
-                    SizedBox(width: 10),
-
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمات الوفيات',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -195,7 +250,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/folder.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمات الزواج',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -203,7 +258,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/persons.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمة الإستعلام عن معاملة',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -211,7 +266,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/check.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمة طلب موعد',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -219,7 +274,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/calendar.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمة طلب تعويض الأضرار',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -227,7 +282,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/user.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمة السجناء',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -235,7 +290,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/prison.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                     HomeServiceCard(
                       title: 'خدمة الاستدعاء',
                       description: 'نص إضافي لمحتوى الخدمة',
@@ -243,7 +298,7 @@ class HomePage extends StatelessWidget {
                       reviews: 12,
                       iconPath: 'assets/icons/mail.svg',
                     ),
-                    SizedBox(width: 10),
+                    SizedBox(width: 15),
                   ],
                 ),
               ),

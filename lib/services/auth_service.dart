@@ -16,7 +16,7 @@ class OdooApiService {
   };
 
   /// Authentifie l'utilisateur
-  Future<String?> login(String db, String login, String password) async {
+  Future<String?> login(String login, String password) async {
     final url = Uri.parse('$baseUrl/auth/');
 
     try {
@@ -24,7 +24,7 @@ class OdooApiService {
           .post(
             url,
             headers: headers,
-            body: jsonEncode({"db": db, "login": login, "password": password}),
+            body: jsonEncode({"login": login, "password": password}),
           )
           .timeout(
             const Duration(seconds: 10),
@@ -147,7 +147,7 @@ class OdooApiService {
   Future<Map<String, dynamic>> getModelData({
     required String model,
     required String query,
-    Map<String, dynamic>? filter,
+    List? filter,
     String? order,
     int? page,
     int? pageSize,

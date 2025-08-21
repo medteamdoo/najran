@@ -61,7 +61,9 @@ class _CarouselExampleState extends State<CarouselExample> {
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _current == entry.key ? Colors.blue : Colors.grey,
+                  color: _current == entry.key
+                      ? Color(0xFF1B8354)
+                      : Colors.grey,
                 ),
               ),
             );

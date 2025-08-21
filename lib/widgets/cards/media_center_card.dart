@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:najran/screens/nafadh_webview.dart';
 
 class MediaCenterCard extends StatelessWidget {
   final String title;
   final String iconPath;
   final String buttonTitle;
+  final VoidCallback? onTap;
 
   const MediaCenterCard({
     Key? key,
     required this.title,
     required this.iconPath,
     required this.buttonTitle,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -58,14 +59,7 @@ class MediaCenterCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const WebViewScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: onTap,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1B8354),
                       shape: RoundedRectangleBorder(

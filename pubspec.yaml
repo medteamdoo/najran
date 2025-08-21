@@ -42,6 +42,9 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   webview_flutter: ^4.4.2
   carousel_slider: ^5.0.0
+  youtube_player_flutter: ^9.1.2
+  flutter_inappwebview: ^6.0.0
+  share_plus: ^10.0.2
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -85,6 +88,24 @@ flutter:
     - assets/images/najran.jpg
     - assets/images/saudia_flag.jpg
     - assets/images/white_logo.png
+    - assets/images/king_fahd_park.png
+    - assets/images/prince_jalawi_park.png
+    - assets/images/okhdoud_city.jpg
+    - assets/images/reserve_arouk_beni_maared.jpg
+    - assets/images/historical_imara_castle.jpg
+    - assets/images/najran_valley_dam.png
+    - assets/images/hama_cultural_zone.jpg
+    - assets/images/king_abdulaziz_park.png
+    - assets/images/popular_food.png
+    - assets/images/folk_arts.png
+    - assets/images/industry.jpg
+    - assets/images/citrus.jpg
+    - assets/images/crafts.jpg
+    - assets/images/mud_houses.png
+    - assets/images/digital_vision.jpg
+    - assets/images/emir_najran.jpg
+    - assets/images/deputy_emir.jpg
+    - assets/images/najran_princes.jpg
     - assets/icons/person.svg
     - assets/icons/language.svg
     - assets/icons/search.svg
@@ -107,6 +128,10 @@ flutter:
     - assets/icons/folder.svg
     - assets/icons/mail.svg
     - assets/icons/prison.svg
+    - assets/icons/notif.svg
+    - assets/icons/facebook.svg
+    - assets/icons/twitter.svg
+    - assets/icons/instagram.svg
     
 
 
