@@ -44,7 +44,7 @@ class NewsCubit extends Cubit<NewsState> {
 
     try {
       final response = await odooApiService.getModelData(
-        model: 'news.news',
+        model: 'get/news.news',
         query:
             '{id,title,attachment,resume,type,video_url,description_text,news_source,date_published,image_1920}',
         order: 'date_published desc',
@@ -91,7 +91,7 @@ class NewsCubit extends Cubit<NewsState> {
 
     try {
       final response = await odooApiService.getModelData(
-        model: 'news.news',
+        model: 'get/news.news',
         query:
             '{id,title,attachment,resume,type,video_url,description_text,news_source,date_published,image_1920}',
         order: 'date_published desc',
@@ -141,7 +141,7 @@ class NewsCubit extends Cubit<NewsState> {
 
     try {
       final response = await odooApiService.getModelData(
-        model: 'news.news',
+        model: 'get/news.news',
         query:
             '{id,title,attachment,resume,type,video_url,description_text,news_source,date_published,image_1920}',
         order: 'date_published desc',

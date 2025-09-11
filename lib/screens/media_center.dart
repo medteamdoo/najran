@@ -4,6 +4,8 @@ import 'package:najran/screens/images/cubit/image_cubit.dart';
 import 'package:najran/screens/images/image_screen.dart';
 import 'package:najran/screens/news/cubit/news_cubit.dart';
 import 'package:najran/screens/news/news_screen.dart';
+import 'package:najran/screens/video/cubit/video_cubit.dart';
+import 'package:najran/screens/video/videos_screen.dart';
 import 'package:najran/services/auth_service.dart';
 import 'package:najran/widgets/cards/media_center_card.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
@@ -58,6 +60,19 @@ class MediaCenter extends StatelessWidget {
               title: 'البوم الفيديوهات',
               buttonTitle: 'عرض الفيديوهات',
               iconPath: 'assets/icons/video.svg',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (_) => VideoCubit(
+                        odooApiService: context.read<OdooApiService>(),
+                      )..fetchVideos(),
+                      child: VideoScreen(),
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),

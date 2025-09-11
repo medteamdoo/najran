@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:najran/screens/death_service/death_service_form.dart';
 import 'package:najran/widgets/cards/service_card.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 
@@ -18,6 +19,12 @@ class ElectronicServices extends StatelessWidget {
               rating: 3.5,
               reviews: 12,
               iconPath: 'assets/icons/folder.svg',
+              startService: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DeathServiceForm()),
+                );
+              },
             ),
             ServiceCard(
               title: 'خدمات الزواج',

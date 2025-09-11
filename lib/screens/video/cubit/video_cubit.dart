@@ -1,38 +1,38 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:najran/models/image.dart';
+import 'package:najran/models/video.dart';
 import 'package:najran/services/auth_service.dart';
 
-part 'image_state.dart';
+part 'video_state.dart';
 
-class ImageCubit extends Cubit<ImageState> {
+class VideoCubit extends Cubit<VideoState> {
   final OdooApiService odooApiService;
 
-  List<ImageModel> _images = [];
+  List<YoutubeVideo> _videos = [];
   int _page = 1;
   final int _pageSize = 10;
   bool _hasReachedMax = false;
 
-  ImageCubit({required this.odooApiService}) : super(ImageInitial());
+  VideoCubit({required this.odooApiService}) : super(VideoInitial());
 
-  List<ImageModel> get images => _images;
+  List<YoutubeVideo> get videos => _videos;
 
-  Future<void> fetchImages({bool loadMore = false}) async {
-    if (state is ImageLoading || _hasReachedMax) return;
+  Future<void> fetchVideos({bool loadMore = false}) async {
+    if (state is VideoLoading || _hasReachedMax) return;
 
     if (loadMore) {
-      emit(ImageLoadingMore());
+      emit(VideoLoadingMore());
       _page++;
     } else {
-      emit(ImageLoading());
+      emit(VideoLoading());
       _page = 1;
       _hasReachedMax = false;
-      _images.clear();
+      _videos.clear();
     }
 
     try {
       final response = await odooApiService.getModelData(
-        model: 'get/news.photo',
-        query: '{id,title,image_1920}',
+        model: 'get/news.video',
+        query: '{id,title,url}',
         order: 'id desc',
         page: _page,
         pageSize: _pageSize,
@@ -41,26 +41,26 @@ class ImageCubit extends Cubit<ImageState> {
       final result = response['result'];
       final dataList = List<Map<String, dynamic>>.from(result['result'] ?? []);
       final newItems = dataList
-          .map((json) => ImageModel.fromJson(json))
+          .map((json) => YoutubeVideo.fromJson(json))
           .toList();
 
       if (newItems.length < _pageSize) _hasReachedMax = true;
 
-      _images.addAll(newItems);
+      _videos.addAll(newItems);
       if (!isClosed) {
-        emit(ImageLoaded(images: _images, hasReachedMax: _hasReachedMax));
+        emit(VideoLoaded(videos: _videos, hasReachedMax: _hasReachedMax));
       }
     } catch (e) {
       if (!isClosed) {
-        emit(ImageError(message: e.toString()));
+        emit(VideoError(message: e.toString()));
       }
     }
   }
 
-  void refreshImages() {
+  void refreshVideos() {
     _page = 1;
-    _images.clear();
+    _videos.clear();
     _hasReachedMax = false;
-    fetchImages();
+    fetchVideos();
   }
 }

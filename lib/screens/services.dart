@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 
 class ScrollableServicePage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _ScrollableServicePageState extends State<ScrollableServicePage> {
     if (context != null) {
       Scrollable.ensureVisible(
         context,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
       setState(() {
@@ -34,14 +35,24 @@ class _ScrollableServicePageState extends State<ScrollableServicePage> {
     return GestureDetector(
       onTap: () => _scrollTo(key, index),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: isSelected ? Colors.green : Colors.black,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            fontSize: 16,
-          ),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Column(
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Color(0xFF384250),
+                fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              height: 2,
+              width: 40,
+              color: isSelected ? Colors.green[800] : Colors.transparent,
+            ),
+          ],
         ),
       ),
     );
@@ -50,80 +61,128 @@ class _ScrollableServicePageState extends State<ScrollableServicePage> {
   @override
   Widget build(BuildContext context) {
     return NajranScaffold(
-      currentIndex: 4,
+      title: " خدمة طلب ترحيل جثمان",
+      currentIndex: 2,
       child: SafeArea(
         child: Column(
           children: [
-            // Boutons en haut
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+            Container(
+              color: Color(0xFFF7FDF9),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Color(0xFFF7FDF9),
+                        side: BorderSide(color: Colors.grey.shade400),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'تحميل دليل الخدمة ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    child: Text("بدء الخدمة"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[300],
-                      foregroundColor: Colors.black,
+                    SizedBox(width: 12),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF1B8354),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        'بدء الخدمة',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    child: Text("تحميل دليل الخدمة"),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-
-            // Tabs
+            SizedBox(height: 15),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(
+              child: Stack(
                 children: [
-                  buildTab("الوصف", 0, _descriptionKey),
-                  buildTab("الشروط والأحكام", 1, _termsKey),
-                  buildTab("الوثائق المطلوبة", 2, _documentsKey),
-                  buildTab("آلية استخدام الخدمة", 3, _usageKey),
+                  // Barre de fond (gris clair)
+                  Container(
+                    height: 2,
+                    margin: const EdgeInsets.only(top: 38),
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.grey.shade300,
+                  ),
+
+                  Row(
+                    children: [
+                      buildTab("الوصف", 0, _descriptionKey),
+                      buildTab("الشروط والأحكام", 1, _termsKey),
+                      buildTab("الوثائق المطلوب إرفاقها", 2, _documentsKey),
+                      buildTab("آلية استخدام الخدمة", 3, _usageKey),
+                    ],
+                  ),
                 ],
               ),
             ),
-
-            // Contenu scrollable
             Expanded(
               child: SingleChildScrollView(
                 controller: _scrollController,
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     buildSectionTitle("وصف الخدمة", _descriptionKey),
                     buildParagraph(
-                      "وهذا مثال على نمط الفقرة الذي يتبعه نظام التصميم، نفس النمط منسق عبر جميع أقسام النص الأساسي. "
-                      "وهذا مثال على نمط الفقرة الذي يتبعه نظام التصميم، نفس النمط منسق عبر جميع أقسام النص الأساسي.",
+                      "تتيح هذه الخدمة إمكانية التقديم على طلب ترحيل جثمان إلكترونياً بدون زيارة إمارة منطقة نجران ومتابعة الطلب عن طريق الموقع الرسمي للإمارة ."
+                      "ملاحظة : لاستخدام الخدمات يتوجب عليك الدخول من خلال النفاذ الوطني الموحد",
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
                     buildSectionTitle("الشروط والأحكام", _termsKey),
-                    ...List.generate(6, (i) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Text(
-                          "${i + 1}- نص مثال للشروط أو الحكم.",
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      );
-                    }),
-                    SizedBox(height: 32),
-                    buildSectionTitle("الوثائق المطلوبة", _documentsKey),
-                    buildParagraph("قائمة الوثائق المطلوبة لإكمال الخدمة."),
-                    SizedBox(height: 32),
+                    buildNumberedList([
+                      "بيانات مقدم الطلب (الاسم، رقم الهوية).",
+                      "عنوان ذويه في المملكة وفي بلده",
+                      "تحديد مسار الرحلة",
+                      "تحديد مكان وجود الجثمان",
+                      "رقم تأشيرة الدخول",
+                    ]),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
+                    buildSectionTitle("الوثائق المطلوب إرفاقها", _documentsKey),
+                    buildNumberedList([
+                      "تقديم استدعاء",
+                      "صورة اقامة المتوفى",
+                      "ارفاق صورة من هوية مقدم الطلب",
+                      " ارفاق جواز سفر المتوفى أو صورة منها",
+                      "موافقة سفارة بلده لترحيله",
+                      "​ارفاق شهادة الوفاة",
+                      "تحديد مسار الرحلة",
+                    ]),
+                    const SizedBox(height: 24),
                     buildSectionTitle("آلية استخدام الخدمة", _usageKey),
-                    buildParagraph("شرح آلية استخدام الخدمة بطريقة مبسطة."),
-                    SizedBox(height: 80),
+                    buildSteps([
+                      "الدخول إلى البوابة الوطنية للتسجيل.",
+                      "اختيار الخدمة المطلوبة.",
+                      "تعبئة البيانات.",
+                      "رفع المستندات المطلوبة.",
+                      "تأكيد الطلب وإرساله.",
+                    ]),
                   ],
                 ),
               ),
@@ -135,27 +194,132 @@ class _ScrollableServicePageState extends State<ScrollableServicePage> {
   }
 
   Widget buildSectionTitle(String title, Key key) {
-    return Container(
+    return Padding(
       key: key,
-      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(vertical: 0),
       child: Text(
         title,
         style: TextStyle(
-          color: Colors.green[800],
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          color: Color(0xFF1B8354),
+          fontSize: 24,
+          fontWeight: FontWeight.w900,
         ),
+        textAlign: TextAlign.right,
       ),
     );
   }
 
   Widget buildParagraph(String text) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         text,
-        style: TextStyle(fontSize: 16),
+        style: const TextStyle(
+          fontSize: 14,
+          height: 1.6,
+          fontWeight: FontWeight.bold,
+        ),
         textAlign: TextAlign.justify,
+      ),
+    );
+  }
+
+  Widget buildNumberedList(List<String> items) {
+    return Column(
+      children: items.asMap().entries.map((entry) {
+        final index = entry.key + 1;
+        final text = entry.value;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "$index- ",
+                style: const TextStyle(
+                  fontSize: 14,
+                  height: 1.6,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.6,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget buildSteps(List<String> steps) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: steps.asMap().entries.map((entry) {
+          final index = entry.key + 1;
+          final text = entry.value;
+          final isLast = index == steps.length;
+
+          return Column(
+            children: [
+              // Cercle avec numéro
+              Container(
+                width: 36,
+                height: 36,
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFF0F9F4),
+                ),
+                child: Center(
+                  child: Text(
+                    "$index",
+                    style: const TextStyle(
+                      color: Color(0xFF1B8354),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Texte de l'étape
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                margin: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    height: 1.6,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              // Ligne verticale (sauf pour la dernière étape)
+              if (!isLast)
+                SvgPicture.asset(
+                  width: 70,
+                  height: 70,
+                  "assets/icons/arrow.svg",
+                  color: Color(0xFF1B8354),
+                ),
+              SizedBox(height: 10),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

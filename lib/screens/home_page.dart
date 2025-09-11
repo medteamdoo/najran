@@ -13,6 +13,7 @@ import 'package:najran/models/current_user_holder.dart';
 import 'package:najran/widgets/carousels/news_carousel.dart';
 
 class HomePage extends StatelessWidget {
+  final OdooApiService _apiService = OdooApiService();
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -75,6 +76,13 @@ class HomePage extends StatelessWidget {
                                     SizedBox(width: 12),
                                     CircleSvgIcon(
                                       assetPath: 'assets/icons/search.svg',
+                                      onTap: () {
+                                        _apiService.logout();
+                                        Navigator.pushReplacementNamed(
+                                          context,
+                                          '/login',
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),

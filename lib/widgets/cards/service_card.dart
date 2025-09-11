@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:najran/screens/nafadh_webview.dart';
+import 'package:najran/screens/services.dart';
 
 class ServiceCard extends StatelessWidget {
   final String title;
@@ -9,6 +9,8 @@ class ServiceCard extends StatelessWidget {
   final double rating;
   final int reviews;
   final String iconPath;
+  final VoidCallback? startService;
+  final VoidCallback? descriptionService;
 
   const ServiceCard({
     Key? key,
@@ -17,6 +19,8 @@ class ServiceCard extends StatelessWidget {
     required this.rating,
     required this.reviews,
     required this.iconPath,
+    this.startService,
+    this.descriptionService,
   }) : super(key: key);
 
   @override
@@ -62,7 +66,6 @@ class ServiceCard extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(description, style: TextStyle(fontSize: 14)),
                 SizedBox(height: 8),
-
                 RatingBarIndicator(
                   rating: rating,
                   itemBuilder: (context, index) =>
@@ -78,7 +81,14 @@ class ServiceCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScrollableServicePage(),
+                          ),
+                        );
+                      },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Colors.grey.shade400),
                         shape: RoundedRectangleBorder(
@@ -92,14 +102,7 @@ class ServiceCard extends StatelessWidget {
                     ),
                     SizedBox(width: 12),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const WebViewScreen(),
-                          ),
-                        );
-                      },
+                      onPressed: startService,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF1B8354),
                         shape: RoundedRectangleBorder(

@@ -1,0 +1,15 @@
+{
+    "welcome": "Welcome",
+    "username": "Username",
+    "emirate_news": "Emirate News",
+    "electronic_services": "Electronic Services",
+    "view_all": "View All",
+    "death_services": "Death Services",
+    "marriage_services": "Marriage Services",
+    "inquiry_service": "Transaction Inquiry Service",
+    "appointment_service": "Appointment Request Service",
+    "compensation_service": "Damage Compensation Service",
+    "prisoner_service": "Prisoner Services",
+    "summon_service": "Summon Service",
+    "service_description": "Additional text for service content"
+}

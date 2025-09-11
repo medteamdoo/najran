@@ -1,0 +1,15 @@
+{
+    "welcome": "مرحباً بك",
+    "username": "اسم المستخدم",
+    "emirate_news": "أخبار الإمارة",
+    "electronic_services": "الخدمات الإلكترونية",
+    "view_all": "عرض الكل",
+    "death_services": "خدمات الوفيات",
+    "marriage_services": "خدمات الزواج",
+    "inquiry_service": "خدمة الاستعلام عن معاملة",
+    "appointment_service": "خدمة طلب موعد",
+    "compensation_service": "خدمة طلب تعويض الأضرار",
+    "prisoner_service": "خدمة السجناء",
+    "summon_service": "خدمة الاستدعاء",
+    "service_description": "نص إضافي لمحتوى الخدمة"
+}

@@ -107,7 +107,11 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
             const SizedBox(height: 16),
             Text(
               news.title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFF1B8354),
+              ),
             ),
             const SizedBox(height: 16),
             if (news.descriptionText != null)

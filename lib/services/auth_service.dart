@@ -68,6 +68,24 @@ class OdooApiService {
     }
   }
 
+  Future<String?> fetchGuideId(String? serviceType) async {
+    try {
+      final response = await getModelData(
+        model: "guide/$serviceType",
+        query: "{}",
+      );
+      final result = response['result'];
+      final guideId = result['guide_id'];
+      if (guideId != null && guideId != false) {
+        return guideId.toString();
+      }
+      return null;
+    } catch (e) {
+      print("⚠️ Erreur fetchGuideId: $e");
+      return null;
+    }
+  }
+
   /// Charge le cookie depuis le stockage
   Future<void> loadSession() async {
     final storedCookie = await _storage.read(key: 'session_cookie');
@@ -98,7 +116,8 @@ class OdooApiService {
             url,
             headers: requestHeaders,
             body: jsonEncode({
-              "query": "{id, name, email, login, image_1920, company_id{name}}",
+              "query":
+                  "{id, name, email, login, image_1920, phone, company_id{name}, commercial_company_name, identification_id}",
             }),
           )
           .timeout(const Duration(seconds: 10));
@@ -159,7 +178,7 @@ class OdooApiService {
       print('❌ Session invalide : cookie non trouvé');
       await logout();
     }
-    final url = Uri.parse("$baseUrl/get/$model");
+    final url = Uri.parse("$baseUrl/$model");
 
     final body = {
       "query": query,
@@ -184,16 +203,62 @@ class OdooApiService {
     }
   }
 
+  Future<bool> sendFormulaire({
+    required String endpoint,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final sessionCookie = await _storage.read(key: 'session_cookie');
+      if (sessionCookie == null) {
+        print('⚠️ Session cookie non trouvé, envoi quand même...');
+      }
+
+      final url = Uri.parse('$baseUrl/$endpoint');
+      final requestHeaders = {...headers};
+
+      if (sessionCookie != null) {
+        requestHeaders['Cookie'] = sessionCookie;
+      }
+
+      print("📤 Envoi formulaire à $url avec data: $data");
+
+      final response = await http
+          .post(url, headers: requestHeaders, body: jsonEncode(data))
+          .timeout(const Duration(seconds: 10));
+
+      print("⚡ Réponse formulaire: ${response.statusCode}");
+      print("📦 Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final res = jsonDecode(response.body);
+
+        if (res is Map && res['result'] is Map) {
+          final result = res['result'];
+          if (result['success'] == true) {
+            print("✅ Formulaire envoyé avec succès: ${result['message']}");
+            return true;
+          } else {
+            print(
+              "❌ Échec de l'envoi: ${result['message'] ?? 'Erreur inconnue'}",
+            );
+            return false;
+          }
+        } else {
+          print("❌ Réponse inattendue: $res");
+          return false;
+        }
+      } else {
+        print("❌ Erreur HTTP: ${response.statusCode}");
+        return false;
+      }
+    } catch (e) {
+      print("⚠️ Erreur sendFormulaire: $e");
+      return false;
+    }
+  }
+
   /// Déconnexion
   Future<void> logout() async {
-    final url = Uri.parse('$baseUrl/logout');
-
-    try {
-      await http.post(url, headers: headers);
-    } catch (e) {
-      print('⚠️ Erreur appel /logout : $e');
-    }
-
     headers.remove('Cookie');
     await _storage.delete(key: 'session_cookie');
     CurrentUserHolder.instance.user = null;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:najran/screens/beneficiary_voice.dart';
-import 'package:najran/screens/commincation_screen.dart';
+import 'package:najran/screens/contact_us.dart';
 import 'package:najran/screens/electronic_services.dart';
 import 'package:najran/screens/imara_links_page.dart';
 import 'package:najran/screens/media_center.dart';
