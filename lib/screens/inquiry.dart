@@ -87,7 +87,10 @@ class InquiryFormPageState extends State<InquiryFormPage> {
                       required: true,
                       maxLines: 4,
                     ),
-                    PhoneField(controller: phoneController),
+                    NumberField(
+                      label: 'رقم الهاتف الجوال',
+                      controller: phoneController,
+                    ),
                     const SizedBox(height: 16),
                     Align(
                       alignment: Alignment.centerRight,
@@ -109,6 +112,7 @@ class InquiryFormPageState extends State<InquiryFormPage> {
                               try {
                                 final success = await _apiService
                                     .sendFormulaire(
+                                      context: context,
                                       endpoint:
                                           "/mobile/beneficiary/inquiry/submit",
                                       data: {

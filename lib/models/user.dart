@@ -36,8 +36,8 @@ class User {
       company: Company.fromJson(json['company_id'] as Map<String, dynamic>),
       image: _parseImageData(json['image_1920']),
       commercialCompany: json['commercial_company_name'] as String,
-      identityNumber: json['identification_id'] != false
-          ? json['identification_id'] as String
+      identityNumber: json['identity_number'] != false
+          ? json['identity_number'] as String
           : "",
     );
   }

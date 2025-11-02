@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:najran/config/config.dart';
@@ -117,7 +118,7 @@ class OdooApiService {
             headers: requestHeaders,
             body: jsonEncode({
               "query":
-                  "{id, name, email, login, image_1920, phone, company_id{name}, commercial_company_name, identification_id}",
+                  "{id, name, email, login, image_1920, phone, company_id{name}, commercial_company_name, identity_number}",
             }),
           )
           .timeout(const Duration(seconds: 10));
@@ -165,12 +166,13 @@ class OdooApiService {
 
   Future<Map<String, dynamic>> getModelData({
     required String model,
-    required String query,
+    String? query,
     List? filter,
     String? order,
     int? page,
     int? pageSize,
     int? limit,
+    String? name,
     Map<String, dynamic>? context,
   }) async {
     final sessionCookie = await _storage.read(key: 'session_cookie');
@@ -184,6 +186,7 @@ class OdooApiService {
       "query": query,
       if (filter != null) "filter": jsonEncode(filter),
       if (order != null) "order": order,
+      if (name != null) "name": name,
       if (page != null) "page": page,
       if (pageSize != null) "page_size": pageSize,
       if (limit != null) "limit": limit,
@@ -204,6 +207,7 @@ class OdooApiService {
   }
 
   Future<bool> sendFormulaire({
+    required BuildContext context, // 👈 on ajoute ça
     required String endpoint,
     required Map<String, dynamic> data,
   }) async {
@@ -224,35 +228,74 @@ class OdooApiService {
 
       final response = await http
           .post(url, headers: requestHeaders, body: jsonEncode(data))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 20));
 
       print("⚡ Réponse formulaire: ${response.statusCode}");
       print("📦 Body: ${response.body}");
 
-      if (response.statusCode == 200) {
-        final res = jsonDecode(response.body);
+      Map<String, dynamic>? res;
+      try {
+        res = jsonDecode(response.body);
+      } catch (_) {
+        print("⚠️ Impossible de parser la réponse en JSON");
+      }
 
-        if (res is Map && res['result'] is Map) {
+      if (response.statusCode == 200) {
+        if (res != null && res['result'] is Map) {
           final result = res['result'];
           if (result['success'] == true) {
             print("✅ Formulaire envoyé avec succès: ${result['message']}");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  result['message'] ?? 'Formulaire envoyé avec succès',
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
             return true;
           } else {
-            print(
-              "❌ Échec de l'envoi: ${result['message'] ?? 'Erreur inconnue'}",
+            final errorMessage =
+                result['error'] ?? result['message'] ?? 'Erreur inconnue';
+            print("❌ Erreur côté Odoo: $errorMessage");
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(errorMessage),
+                backgroundColor: Colors.red,
+              ),
             );
             return false;
           }
         } else {
           print("❌ Réponse inattendue: $res");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Réponse inattendue du serveur."),
+              backgroundColor: Colors.red,
+            ),
+          );
           return false;
         }
       } else {
-        print("❌ Erreur HTTP: ${response.statusCode}");
+        // 🟥 Cas où le code HTTP != 200
+        String errorMessage = "Erreur HTTP ${response.statusCode}";
+        if (res != null && res.containsKey('error')) {
+          errorMessage = res['error'].toString();
+        } else if (response.reasonPhrase != null) {
+          errorMessage = "${response.reasonPhrase}";
+        }
+
+        print("❌ $errorMessage");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        );
         return false;
       }
     } catch (e) {
       print("⚠️ Erreur sendFormulaire: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Erreur: $e"), backgroundColor: Colors.red),
+      );
       return false;
     }
   }

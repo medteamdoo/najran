@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:najran/screens/news/cubit/news_cubit.dart';
 import 'package:najran/screens/news/news_details_screen.dart';
-import 'package:najran/services/auth_service.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 import 'package:najran/widgets/cards/news_card.dart';
 
@@ -47,7 +47,22 @@ class _NewsScreenState extends State<NewsScreen> {
       child: BlocBuilder<NewsCubit, NewsState>(
         builder: (context, state) {
           if (state is NewsLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.fourRotatingDots(
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "جاري تحميل البيانات...",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            );
           }
 
           if (state is NewsError) {
@@ -73,16 +88,35 @@ class _NewsScreenState extends State<NewsScreen> {
                   return NewsCard(
                     news: news,
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlocProvider(
-                            create: (_) => NewsCubit(
-                              odooApiService: context.read<OdooApiService>(),
-                            )..fetchNews(),
-                            child: NewsDetailScreen(news: news),
-                          ),
-                        ),
+                      final newsCubit = context.read<NewsCubit>();
+
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled:
+                            true, // pour prendre presque tout l'écran
+                        backgroundColor: Colors
+                            .transparent, // important pour arrondir uniquement le container
+                        builder: (context) {
+                          return DraggableScrollableSheet(
+                            initialChildSize: 0.9,
+                            maxChildSize: 0.95,
+                            minChildSize: 0.5,
+                            expand: false,
+                            builder: (context, scrollController) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(
+                                      20,
+                                    ), // coins arrondis en haut
+                                  ),
+                                ),
+                                child: NewsDetailScreen(news: news),
+                              );
+                            },
+                          );
+                        },
                       );
                     },
                   );

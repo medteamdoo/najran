@@ -31,8 +31,12 @@ class ProceduresGuide extends StatefulWidget {
   State<ProceduresGuide> createState() => _ServicePageState();
 }
 
-class _ServicePageState extends State<ProceduresGuide> {
+class _ServicePageState extends State<ProceduresGuide>
+    with SingleTickerProviderStateMixin {
   final OdooApiService _odooService = OdooApiService();
+  late AnimationController _controller;
+  late List<Animation<Offset>> _slideAnimations;
+  late List<Animation<double>> _fadeAnimations;
 
   final services = [
     ServiceModel(
@@ -322,6 +326,55 @@ class _ServicePageState extends State<ProceduresGuide> {
   ];
 
   int? expandedIndex;
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+
+    _initializeAnimations();
+    _controller.forward();
+  }
+
+  void _initializeAnimations() {
+    _slideAnimations = services.asMap().entries.map((entry) {
+      final index = entry.key;
+      final start = index * 0.05;
+      final end = start + 0.5;
+
+      return Tween<Offset>(
+        begin: const Offset(0, 0.2),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(start, end, curve: Curves.easeOut),
+        ),
+      );
+    }).toList();
+
+    _fadeAnimations = services.asMap().entries.map((entry) {
+      final index = entry.key;
+      final start = index * 0.05;
+      final end = start + 0.5;
+
+      return Tween<double>(begin: 0, end: 1).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(start, end, curve: Curves.easeIn),
+        ),
+      );
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   Future<void> _openPdf(String pdfUrl) async {
     final guidId = await _loadGuideId(pdfUrl);
@@ -360,143 +413,161 @@ class _ServicePageState extends State<ProceduresGuide> {
             final service = services[index];
             final isExpanded = expandedIndex == index;
 
-            return Card(
-              color: Colors.white,
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-              child: ExpansionTile(
-                initiallyExpanded: isExpanded,
-                title: Row(
-                  children: [
-                    SvgPicture.asset(
-                      "assets/icons/file_add.svg",
-                      width: 20,
-                      height: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        service.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                collapsedBackgroundColor: Colors.white,
-                backgroundColor: const Color(0xFFE5E7EB),
-                tilePadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 0,
-                ),
-                childrenPadding: EdgeInsets.zero,
-                visualDensity: const VisualDensity(vertical: -2),
-                onExpansionChanged: (expanded) {
-                  setState(() {
-                    expandedIndex = expanded ? index : null;
-                  });
-                },
-                children: [
-                  Container(
-                    color: Colors.white,
-                    child: Column(
+            return FadeTransition(
+              opacity: _fadeAnimations[index],
+              child: SlideTransition(
+                position: _slideAnimations[index],
+                child: Card(
+                  color: Colors.white,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 0,
+                  ),
+                  child: ExpansionTile(
+                    initiallyExpanded: isExpanded,
+                    title: Row(
                       children: [
-                        _buildSection("الشروط والأحكام", service.conditions),
-                        const Divider(),
-                        _buildSection(
-                          "الوثائق المطلوب ارفقها",
-                          service.documents,
+                        SvgPicture.asset(
+                          "assets/icons/file_add.svg",
+                          width: 20,
+                          height: 20,
                         ),
-                        const SizedBox(height: 10),
-                        const Divider(),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(
-                                      0xFF1B8354,
-                                    ), // أخضر مثل الصورة
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        4,
-                                      ), // زوايا خفيفة فقط
-                                    ),
-                                    elevation: 0, // بدون ظل
-                                  ),
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("بدء الخدمة"),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "بدء الخدمة",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              SizedBox(
-                                width: double.infinity,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                    ),
-                                    side: const BorderSide(
-                                      color: Colors.grey,
-                                    ), // حدود رمادية مثل الصورة
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    if (service.guideId != null) {
-                                      _openPdf(service.guideId!);
-                                    } else {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text("لا يوجد دليل متاح"),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text(
-                                    "تحميل دليل الخدمة",
-                                    style: TextStyle(
-                                      color: Colors.black, // نص أسود مثل الصورة
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            service.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
+                    collapsedBackgroundColor: Colors.white,
+                    backgroundColor: const Color(0xFFE5E7EB),
+                    tilePadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 0,
+                    ),
+                    childrenPadding: EdgeInsets.zero,
+                    visualDensity: const VisualDensity(vertical: -2),
+                    onExpansionChanged: (expanded) {
+                      setState(() {
+                        expandedIndex = expanded ? index : null;
+                      });
+                    },
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            _buildSection(
+                              "الشروط والأحكام",
+                              service.conditions,
+                            ),
+                            const Divider(),
+                            _buildSection(
+                              "الوثائق المطلوب ارفقها",
+                              service.documents,
+                            ),
+                            const SizedBox(height: 10),
+                            const Divider(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                          0xFF1B8354,
+                                        ),
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
+                                        ),
+                                        elevation: 0,
+                                      ),
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("بدء الخدمة"),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text(
+                                        "بدء الخدمة",
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                        ),
+                                        side: const BorderSide(
+                                          color: Colors.grey,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        if (service.guideId != null) {
+                                          _openPdf(service.guideId!);
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "لا يوجد دليل متاح",
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: const Text(
+                                        "تحميل دليل الخدمة",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
           },
@@ -536,7 +607,7 @@ class _ServicePageState extends State<ProceduresGuide> {
                     Expanded(
                       child: Text(
                         text,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -547,6 +618,6 @@ class _ServicePageState extends State<ProceduresGuide> {
         ),
       );
     }
-    return SizedBox();
+    return const SizedBox();
   }
 }

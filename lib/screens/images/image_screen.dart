@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:najran/screens/images/cubit/image_cubit.dart';
 import 'package:najran/widgets/cards/image_card.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
@@ -45,7 +46,22 @@ class _ImageScreenState extends State<ImageScreen> {
       child: BlocBuilder<ImageCubit, ImageState>(
         builder: (context, state) {
           if (state is ImageLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LoadingAnimationWidget.fourRotatingDots(
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    "جاري تحميل البيانات...",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            );
           }
 
           if (state is ImageError) {

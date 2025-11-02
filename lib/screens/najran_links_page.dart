@@ -17,7 +17,13 @@ import 'package:najran/screens/prince_jalawi_park.dart';
 import 'package:najran/screens/reserve_arouk_beni_maared.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 
-class NajranLinksPage extends StatelessWidget {
+class NajranLinksPage extends StatefulWidget {
+  @override
+  State<NajranLinksPage> createState() => _NajranLinksPageState();
+}
+
+class _NajranLinksPageState extends State<NajranLinksPage>
+    with SingleTickerProviderStateMixin {
   final List<Map<String, dynamic>> items = [
     {"title": "نبذة عن نجران", "page": RegionInfoScreen()},
     {"title": "منتزه الملك فهد", "page": KingFahdPark()},
@@ -37,6 +43,55 @@ class NajranLinksPage extends StatelessWidget {
     {"title": "الأكلات الشعبية", "page": PopularFood()},
   ];
 
+  late final AnimationController _controller;
+  late final List<Animation<Offset>> _slideAnimations;
+  late final List<Animation<double>> _fadeAnimations;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _slideAnimations = items.asMap().entries.map((entry) {
+      final index = entry.key;
+      final start = index * 0.05;
+      final end = (start + 0.5).clamp(0.0, 1.0);
+      return Tween<Offset>(
+        begin: const Offset(0, 0.2),
+        end: Offset.zero,
+      ).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(start, end, curve: Curves.easeOut),
+        ),
+      );
+    }).toList();
+
+    _fadeAnimations = items.asMap().entries.map((entry) {
+      final index = entry.key;
+      final start = index * 0.05;
+      final end = (start + 0.5).clamp(0.0, 1.0);
+      return Tween<double>(begin: 0, end: 1).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(start, end, curve: Curves.easeIn),
+        ),
+      );
+    }).toList();
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return NajranScaffold(
@@ -49,46 +104,31 @@ class NajranLinksPage extends StatelessWidget {
           child: const Divider(height: 1),
         ),
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(
-              items[index]["title"],
-              textAlign: TextAlign.right, // Alignement arabe
-              style: const TextStyle(fontSize: 14, fontFamily: 'Arial'),
+          return FadeTransition(
+            opacity: _fadeAnimations[index],
+            child: SlideTransition(
+              position: _slideAnimations[index],
+              child: ListTile(
+                title: Text(
+                  items[index]["title"],
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(fontSize: 14, fontFamily: 'Arial'),
+                ),
+                visualDensity: const VisualDensity(vertical: -4),
+                leading: const Icon(Icons.arrow_forward_ios, size: 14),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => items[index]["page"],
+                    ),
+                  );
+                },
+              ),
             ),
-            visualDensity: const VisualDensity(vertical: -4),
-            leading: const Icon(Icons.arrow_forward_ios, size: 14),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => items[index]["page"]),
-              );
-            },
           );
         },
       ),
     );
   }
-}
-
-// Exemple de pages vides
-class AboutNajranPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _placeholderPage("نبذة عن نجران");
-  }
-}
-
-class KingFahdParkPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return _placeholderPage("منتزه الملك فهد");
-  }
-}
-
-// Fonction utilitaire pour créer une page simple
-Widget _placeholderPage(String title) {
-  return Scaffold(
-    appBar: AppBar(title: Text(title)),
-    body: Center(child: Text("صفحة $title")),
-  );
 }

@@ -97,7 +97,10 @@ class SuggestionFormPageState extends State<SuggestionFormPage> {
                       label: 'سبب الاقتراح',
                       controller: reasonController,
                     ),
-                    PhoneField(controller: phoneController),
+                    NumberField(
+                      label: 'رقم الهاتف الجوال',
+                      controller: phoneController,
+                    ),
                     const SizedBox(height: 16),
                     Align(
                       alignment: Alignment.centerRight,
@@ -120,6 +123,7 @@ class SuggestionFormPageState extends State<SuggestionFormPage> {
 
                               try {
                                 final success = await _apiService.sendFormulaire(
+                                  context: context,
                                   endpoint:
                                       "/mobile/beneficiary/suggestion/submit",
                                   data: {

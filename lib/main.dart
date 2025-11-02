@@ -14,17 +14,23 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ar', null);
 
+  // Notifications
   const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
   final initSettings = InitializationSettings(android: androidSettings);
   await FlutterLocalNotificationsPlugin().initialize(initSettings);
 
-  // ✅ Initialiser le service une fois
+  // ✅ Initialiser le service et le Cubit global
   final odooApiService = OdooApiService();
+  final newsCubit = NewsCubit(odooApiService: odooApiService);
+  await newsCubit.fetchNews(); // précharge les news
 
   runApp(
-    RepositoryProvider.value(
-      value: odooApiService,
-      child: InactivityWatcher(child: MyApp()),
+    MultiRepositoryProvider(
+      providers: [RepositoryProvider.value(value: odooApiService)],
+      child: MultiBlocProvider(
+        providers: [BlocProvider.value(value: newsCubit)],
+        child: InactivityWatcher(child: MyApp()),
+      ),
     ),
   );
 }
@@ -38,16 +44,9 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
       routes: {
         '/login': (_) => const NajranLoginPage(),
-        '/home': (_) => BlocProvider(
-          create: (_) =>
-              NewsCubit(odooApiService: context.read<OdooApiService>())
-                ..fetchNews(),
-          child: HomePage(),
-        ),
-        '/news': (context) => BlocProvider(
-          create: (_) =>
-              NewsCubit(odooApiService: context.read<OdooApiService>())
-                ..fetchNews(),
+        '/home': (_) => HomePage(),
+        '/news': (_) => BlocProvider.value(
+          value: context.read<NewsCubit>(),
           child: const NewsScreen(),
         ),
       },

@@ -1,9 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:najran/models/search_item.dart';
+import 'package:najran/screens/Governorates.dart';
+import 'package:najran/screens/citrus.dart';
+import 'package:najran/screens/contact_us.dart';
+import 'package:najran/screens/crafts.dart';
+import 'package:najran/screens/digital_vision.dart';
 import 'package:najran/screens/electronic_services.dart';
+import 'package:najran/screens/folk_arts.dart';
+import 'package:najran/screens/hama_cultural_zone.dart';
+import 'package:najran/screens/helpdesk.dart';
+import 'package:najran/screens/historical_imara_castle.dart';
+import 'package:najran/screens/industry.dart';
+import 'package:najran/screens/king_abdulaziz_park.dart';
+import 'package:najran/screens/king_fahd_park.dart';
+import 'package:najran/screens/list_screen.dart';
+import 'package:najran/screens/media_center.dart';
+import 'package:najran/screens/mud_houses.dart';
+import 'package:najran/screens/najran_info.dart';
+import 'package:najran/screens/najran_princes.dart';
+import 'package:najran/screens/najran_valley_dam.dart';
 import 'package:najran/screens/news/cubit/news_cubit.dart';
 import 'package:najran/screens/news/news_details_screen.dart';
 import 'package:najran/screens/news/news_screen.dart';
+import 'package:najran/screens/okhdoud_city.dart';
+import 'package:najran/screens/popular_food.dart';
+import 'package:najran/screens/prince_jalawi_park.dart';
+import 'package:najran/screens/procedures_guide.dart';
+import 'package:najran/screens/reserve_arouk_beni_maared.dart';
 import 'package:najran/services/auth_service.dart';
 import 'package:najran/widgets/cards/home_news_card.dart';
 import 'package:najran/widgets/cards/home_service_card.dart';
@@ -11,6 +36,7 @@ import 'package:najran/widgets/circle_svg_icon.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 import 'package:najran/models/current_user_holder.dart';
 import 'package:najran/widgets/carousels/news_carousel.dart';
+import 'package:najran/widgets/search_modal.dart';
 
 class HomePage extends StatelessWidget {
   final OdooApiService _apiService = OdooApiService();
@@ -72,16 +98,330 @@ class HomePage extends StatelessWidget {
                                     SizedBox(width: 12),
                                     CircleSvgIcon(
                                       assetPath: 'assets/icons/notif.svg',
-                                    ),
-                                    SizedBox(width: 12),
-                                    CircleSvgIcon(
-                                      assetPath: 'assets/icons/search.svg',
                                       onTap: () {
                                         _apiService.logout();
                                         Navigator.pushReplacementNamed(
                                           context,
                                           '/login',
                                         );
+                                      },
+                                    ),
+                                    SizedBox(width: 12),
+                                    CircleSvgIcon(
+                                      assetPath: 'assets/icons/search.svg',
+                                      onTap: () {
+                                        final List<SearchItem> searchItems = [
+                                          SearchItem(
+                                            title: 'أخبار الإمارة',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      BlocProvider(
+                                                        create: (_) => NewsCubit(
+                                                          odooApiService: context
+                                                              .read<
+                                                                OdooApiService
+                                                              >(),
+                                                        )..fetchNews(),
+                                                        child: NewsScreen(),
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'الخدمات الإلكترونية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ElectronicServices(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: "الحرف والأسوق الشعبية ",
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Crafts(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'بلاغ فني',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      helpDeskFormPage(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'الصناعة في منطقة نجران',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Industry(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'الحمضيات في منطقة نجران',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Citrus(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'تواصل معنا',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      TawasolFormPage(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'الرؤية والرسالة الرقمية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DigitalVision(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'الفنون الشعبية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FolkArts(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'حديقة الملك عبدالعزيز',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      KingAbdulazizPark(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'محافظات منطقة نجران',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Governorates(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'منطقة حمى الثقافية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HamaCulturalZone(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'قصر الامارة التاريخي',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      HistoricalImaraCastle(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'منتزه الملك فهد',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      KingFahdPark(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'القائمة',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ListScreen(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'المركز الإعلامي',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MediaCenter(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'البيوت الطينية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MudHouses(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'منطقة نجران',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RegionInfoScreen(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'أمراء منطقة نجران',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      NajranPrinces(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'سد وادي نجران',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      NajranValleyDam(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'مدينة الأخدود الأثرية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      OkhdoudCity(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: ' الأكلات الشعبية',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PopularFood(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title:
+                                                'منتزه الأمير جلوي بن عبد العزيز',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PrinceJalawiPark(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: "دليل الإجراءات",
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProceduresGuide(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          SearchItem(
+                                            title: 'محمية عروق بني معارض',
+                                            onTap: (context) {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ReserveAroukBeniMaared(),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ];
+                                        showSearchOverlay(context, searchItems);
                                       },
                                     ),
                                   ],
@@ -164,7 +504,25 @@ class HomePage extends StatelessWidget {
                 child: BlocBuilder<NewsCubit, NewsState>(
                   builder: (context, state) {
                     if (state is NewsLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            LoadingAnimationWidget.fourRotatingDots(
+                              color: Colors.green,
+                              size: 60,
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "جاري تحميل البيانات...",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     }
                     if (state is NewsError) {
                       return Center(child: Text("Erreur: ${state.message}"));
@@ -181,17 +539,35 @@ class HomePage extends StatelessWidget {
                             child: HomeNewsCard(
                               news: news,
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BlocProvider(
-                                      create: (_) => NewsCubit(
-                                        odooApiService: context
-                                            .read<OdooApiService>(),
-                                      )..fetchNews(),
-                                      child: NewsDetailScreen(news: news),
-                                    ),
-                                  ),
+                                final newsCubit = context.read<NewsCubit>();
+
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled:
+                                      true, // pour prendre presque tout l'écran
+                                  backgroundColor: Colors
+                                      .transparent, // important pour arrondir uniquement le container
+                                  builder: (context) {
+                                    return DraggableScrollableSheet(
+                                      initialChildSize: 0.9,
+                                      maxChildSize: 0.95,
+                                      minChildSize: 0.5,
+                                      expand: false,
+                                      builder: (context, scrollController) {
+                                        return Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(
+                                                20,
+                                              ), // coins arrondis en haut
+                                            ),
+                                          ),
+                                          child: NewsDetailScreen(news: news),
+                                        );
+                                      },
+                                    );
+                                  },
                                 );
                               },
                             ),

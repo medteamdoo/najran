@@ -8,6 +8,7 @@ class LabeledField extends StatelessWidget {
   final int maxLines;
   final TextInputType type;
   final bool obscureText;
+  final String? Function(String?)? validator;
 
   const LabeledField({
     super.key,
@@ -17,6 +18,7 @@ class LabeledField extends StatelessWidget {
     this.maxLines = 1,
     this.type = TextInputType.text,
     this.obscureText = false,
+    this.validator,
   });
 
   @override
@@ -63,11 +65,17 @@ class LabeledField extends StatelessWidget {
                 borderSide: const BorderSide(color: Colors.red, width: 2),
               ),
             ),
-            validator: required
-                ? (value) => value == null || value.trim().isEmpty
-                      ? 'هذا الحقل مطلوب'
-                      : null
-                : null,
+            validator: (value) {
+              // 1️⃣ Vérification du required
+              if (required && (value == null || value.trim().isEmpty)) {
+                return 'هذا الحقل مطلوب';
+              }
+              // 2️⃣ Vérification du validator passé en paramètre
+              if (validator != null) {
+                return validator!(value);
+              }
+              return null; // tout est ok
+            },
           ),
         ],
       ),

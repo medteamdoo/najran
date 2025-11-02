@@ -6,7 +6,6 @@ import 'package:najran/screens/news/news_screen.dart';
 import 'package:najran/services/auth_service.dart';
 import 'package:najran/widgets/cards/home_news_card.dart';
 import 'package:najran/widgets/carousels/news_carousel.dart';
-import 'package:najran/widgets/najran_scaffold.dart';
 import 'package:najran/widgets/social_share_buttons.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -79,150 +78,175 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> {
   Widget build(BuildContext context) {
     final news = widget.news;
 
-    return NajranScaffold(
-      title: 'الأخبار',
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (news.isYoutubeVideo && news.videoUrl != null)
-              YoutubePlayer(
-                controller: _controller,
-                showVideoProgressIndicator: true,
-                onReady: () {
-                  setState(() {
-                    _isPlayerReady = true;
-                  });
-                },
-              )
-            else if (news.image != null)
-              Image.memory(news.image!)
-            else
-              Container(
-                height: 200,
-                color: Colors.grey,
-                child: const Center(child: Text('Aucune image disponible')),
-              ),
-            const SizedBox(height: 16),
-            Text(
-              news.title,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                color: Color(0xFF1B8354),
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (news.descriptionText != null)
-              Text(news.descriptionText!, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 16),
-            const Divider(height: 1),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'مشاركة على :',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SocialShareButtons(
-                  title: news.title,
-                  description: news.descriptionText ?? '',
-                  url: news.isYoutubeVideo ? news.videoUrl : null,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Divider(height: 1),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "المزيد من الأخبار ",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                          create: (_) => NewsCubit(
-                            odooApiService: context.read<OdooApiService>(),
-                          )..fetchNews(),
-                          child: NewsScreen(),
-                        ),
-                      ),
-                    );
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Container(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (news.isYoutubeVideo && news.videoUrl != null)
+                YoutubePlayer(
+                  controller: _controller,
+                  showVideoProgressIndicator: true,
+                  onReady: () {
+                    setState(() {
+                      _isPlayerReady = true;
+                    });
                   },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.grey.shade400),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                  child: Text(
-                    ' عرض الكل',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                )
+              else if (news.image != null)
+                Image.memory(news.image!)
+              else
+                Container(
+                  height: 200,
+                  color: Colors.grey,
+                  child: const Center(child: Text('Aucune image disponible')),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 250,
-              child: BlocBuilder<NewsCubit, NewsState>(
-                builder: (context, state) {
-                  if (state is NewsLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state is NewsError) {
-                    return Center(child: Text("Erreur: ${state.message}"));
-                  }
-                  if (state is NewsLoaded) {
-                    final newsList = state.news;
-
-                    return CustomCarousel(
-                      items: newsList.map((news) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                          child: HomeNewsCard(
-                            news: news,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => BlocProvider(
-                                    create: (_) => NewsCubit(
-                                      odooApiService: context
-                                          .read<OdooApiService>(),
-                                    )..fetchNews(),
-                                    child: NewsDetailScreen(news: news),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }
-                  return SizedBox(height: 300);
-                },
+              const SizedBox(height: 16),
+              Text(
+                news.title,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFF1B8354),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              if (news.descriptionText != null)
+                Text(
+                  news.descriptionText!,
+                  style: const TextStyle(fontSize: 16),
+                ),
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'مشاركة على :',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SocialShareButtons(
+                    title: news.title,
+                    description: news.descriptionText ?? '',
+                    url: news.isYoutubeVideo ? news.videoUrl : null,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Divider(height: 1),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "المزيد من الأخبار ",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider(
+                            create: (_) => NewsCubit(
+                              odooApiService: context.read<OdooApiService>(),
+                            )..fetchNews(),
+                            child: NewsScreen(),
+                          ),
+                        ),
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey.shade400),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    child: Text(
+                      ' عرض الكل',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 250,
+                child: BlocBuilder<NewsCubit, NewsState>(
+                  builder: (context, state) {
+                    if (state is NewsLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is NewsError) {
+                      return Center(child: Text("Erreur: ${state.message}"));
+                    }
+                    if (state is NewsLoaded) {
+                      final newsList = state.news;
+
+                      return CustomCarousel(
+                        items: newsList.map((news) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6.0,
+                            ),
+                            child: HomeNewsCard(
+                              news: news,
+                              onTap: () {
+                                final newsCubit = context.read<NewsCubit>();
+
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled:
+                                      true, // pour prendre presque tout l'écran
+                                  backgroundColor: Colors
+                                      .transparent, // important pour arrondir uniquement le container
+                                  builder: (context) {
+                                    return DraggableScrollableSheet(
+                                      initialChildSize: 0.9,
+                                      maxChildSize: 0.95,
+                                      minChildSize: 0.5,
+                                      expand: false,
+                                      builder: (context, scrollController) {
+                                        return Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(
+                                                20,
+                                              ), // coins arrondis en haut
+                                            ),
+                                          ),
+                                          child: NewsDetailScreen(news: news),
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    }
+                    return SizedBox(height: 300);
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

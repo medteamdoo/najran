@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'form_label.dart';
 
-class PhoneField extends StatelessWidget {
+class NumberField extends StatelessWidget {
+  final String label;
   final TextEditingController controller;
+  final String? Function(String?)? validator; // ✅ Ajouter le validator
 
-  const PhoneField({super.key, required this.controller});
+  const NumberField({
+    super.key,
+    required this.label,
+    required this.controller,
+    this.validator,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +20,7 @@ class PhoneField extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const FormLabel(text: 'رقم الهاتف الجوال'),
+          FormLabel(text: label),
           const SizedBox(height: 4),
           Stack(
             children: [
@@ -22,6 +29,7 @@ class PhoneField extends StatelessWidget {
                 keyboardType: TextInputType.phone,
                 style: const TextStyle(fontSize: 14),
                 textAlign: TextAlign.right,
+                validator: validator,
                 decoration: InputDecoration(
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(

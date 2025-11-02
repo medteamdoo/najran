@@ -2,7 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:najran/widgets/carousels/carousel.dart';
 import 'package:najran/widgets/najran_scaffold.dart';
 
-class FolkArts extends StatelessWidget {
+class FolkArts extends StatefulWidget {
+  @override
+  _FolkArtsState createState() => _FolkArtsState();
+}
+
+class _FolkArtsState extends State<FolkArts>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 800),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(_controller);
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -11,25 +45,25 @@ class FolkArts extends StatelessWidget {
       title: 'الفنون الشعبية',
       currentIndex: 3,
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12), // Coins arrondis
-                child: Image.asset(
-                  'assets/images/folk_arts.png',
-                  height: screenHeight * 0.25,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Padding(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      'assets/images/folk_arts.png',
+                      height: screenHeight * 0.25,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 16),
                   Text(
                     'الفنون الشعبية:',
                     style: TextStyle(
@@ -40,7 +74,7 @@ class FolkArts extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    ' الفنون الشعبية تشتهر منطقة نجران بعدداً من الألوان الفلكلورية " الزامل، الرزفه، المثلوثه،الطبول، الشرح .',
+                    'الفنون الشعبية تشتهر منطقة نجران بعدداً من الألوان الفلكلورية " الزامل، الرزفه، المثلوثه،الطبول، الشرح .',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 16),
@@ -56,12 +90,12 @@ class FolkArts extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'الذي يعد من أهم الفنون الشعبية التي تؤدى في جميع مناسبات أهالي نجران ولا يقتصر أدائه على الأفراح بل يشمل ذلك مناسبات عديدة منها التوسط في حل الخلافات التي تنشأ بين القبائل أو الأفراد وما شابهها، حيث يُؤدى هذا اللون دون استخدام الإيقاعات حيث يصطف الأشخاص الذين يؤدونه بطريقة منتظمة وبلباس واحد وتكون كلماته في الغالب من بيتين من الشعر ، يردّدونه في لحن رجولي تمتلئ به الحناجر، مفسرين في معناها سبب قدومهم.',
+                    'الذي يعد من أهم الفنون الشعبية التي تؤدى في جميع مناسبات أهالي نجران ...',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 16),
                   Text(
-                    '2.لون الرزفة :',
+                    '2.لون الرزفة :',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
@@ -70,12 +104,12 @@ class FolkArts extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'ويؤدى دون إيقاعات بواسطة مجموعة تنقسم إلى صفين يتناوبان على ترديد أبيات من الشعر، بينما يتحرك كل صف بشكل منظم كلاً في اتجاه الآخر تارة وإلى الخلف تارة أخرى يقوم بين تلك الصفين شخصين يوؤدون فن "السعب " .',
+                    'ويؤدى دون إيقاعات بواسطة مجموعة تنقسم إلى صفين ...',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '3.لون فن المثلوثه : ',
+                    '3.لون فن المثلوثه :',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w900,
@@ -84,7 +118,7 @@ class FolkArts extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'الذي يؤدى على شكل نصف دائرة بعدد من الرجال يرددون أبياتاٌ شعرية تتناول الأنماط الشعرية المعروفة بألحان عذبة ولها نظام معين في عدد الخطوات والإيقاع يتقدمهم يسمى " المزيف " الذي ينظم حركتهم وخطواتهم . ',
+                    'الذي يؤدى على شكل نصف دائرة بعدد من الرجال ...',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 16),
@@ -98,7 +132,7 @@ class FolkArts extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    '​ ويعد من أكثر الألوان الشعبية في المنطقة ، ويجمع في مضامينه بين اللحن والإيقاع ويؤدى بواسطة صفين يقومون بأداء أسلوب الرزفة مع ترديد الأبيات الشعرية بألحان مختلفة وإيقاعات عديدة.',
+                    'ويعد من أكثر الألوان الشعبية في المنطقة ...',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 16),
@@ -112,7 +146,7 @@ class FolkArts extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    ' الشرح عند أهل شروره وشرقها وجنوبها ماخوذ من كلمة الانشراح اي انشراح النفس والصدر والشعور بالراحة النفسية والتعبير عن المشاعر الداخلية للمشارك في الشرح لانه فيه تروح للنفس وترويض للعقل وممارسة مهارات فنية تعبيرية من خلال الانسجام والتواصل اللفظي واللا لفظي بين المشاركين وأداءهم الفني والتفاعل الايجابي للتعبير عن شجونهم. والابيات الشعرية التي تقال في الشرح شعر غنائي له ألحان مختلفة حسب الوزن والكلمات ، التي تم القاءها من قبل أحد الشعراء ويحدث فيها سجل شعري غنائي من خلال الأداء الجميل للفرق الشعبية التي تؤدي الشرح ، وله ألحان متنوعة وجميلة . ',
+                    'الشرح عند أهل شروره وشرقها وجنوبها ماخوذ من كلمة الانشراح ...',
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 16),
@@ -121,7 +155,7 @@ class FolkArts extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
